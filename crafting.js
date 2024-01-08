@@ -238,7 +238,7 @@ function createPickaxeRecipes() {
         for (let j = 0; j < pickaxeRecipes[i].length; j++) {
             let element = document.createElement('p');
             element.id = (pickaxeRecipes[i][j][0] + ("pickaxeRecipe" + (i+1) + "Display"));
-            element.innerHTML = pickaxeRecipes[i][j][0] + " " + oreList[pickaxeRecipes[i][j][0]][1][0] + "/" + pickaxeRecipes[i][j][1];
+            element.innerHTML = "<span class='emoji'>" + pickaxeRecipes[i][j][0] + "</span> " + oreList[pickaxeRecipes[i][j][0]][1][0] + "/" + pickaxeRecipes[i][j][1];
             if (oreList[pickaxeRecipes[i][i][0]][1][0] >= pickaxeRecipes[i][j][1])
                 element.style.color = "green";
             else
@@ -265,7 +265,7 @@ function createGearRecipes() {
         for (let j = 0; j < gearRecipes[i].length; j++) {
             let element = document.createElement('p');
             element.id = (gearRecipes[i][j][0] + ("gearRecipe" + (i+1) + "Display"));
-            element.innerHTML = gearRecipes[i][j][0] + " " + oreList[gearRecipes[i][j][0]][1][0] + "/" + gearRecipes[i][j][1];
+            element.innerHTML = "<span class='emoji'>" + gearRecipes[i][j][0] + "</span> " + oreList[gearRecipes[i][j][0]][1][0] + "/" + gearRecipes[i][j][1];
             if (oreList[gearRecipes[i][i][0]][1][0] >= gearRecipes[i][j][1]) {
                 element.style.color = "green";
             } else {
@@ -292,7 +292,7 @@ function updateActiveRecipe() {
                 let parent = recipeElements[0][i];
                 let elements = parent.children;
                 for (let j = 0; j < elements.length - 1; j++) {
-                    elements[j].innerHTML = pickaxeRecipes[i][j][0] + " " + oreList[pickaxeRecipes[i][j][0]][1][0] + "/" + pickaxeRecipes[i][j][1];
+                    elements[j].innerHTML = "<span class='emoji'>" + pickaxeRecipes[i][j][0] + "</span> " + oreList[pickaxeRecipes[i][j][0]][1][0] + "/" + pickaxeRecipes[i][j][1];
                     if (oreList[pickaxeRecipes[i][j][0]][1][0] >= pickaxeRecipes[i][j][1])
                         elements[j].style.color = "green";
                     else
@@ -306,7 +306,7 @@ function updateActiveRecipe() {
                 let parent = recipeElements[1][i];
                 let elements = parent.children;
                 for (let j = 0; j < elements.length - 1; j++) {
-                    elements[j].innerHTML = gearRecipes[i][j][0] + " " + oreList[gearRecipes[i][j][0]][1][0] + "/" + gearRecipes[i][j][1];
+                    elements[j].innerHTML = "<span class='emoji'>" + gearRecipes[i][j][0] + "</span> " + oreList[gearRecipes[i][j][0]][1][0] + "/" + gearRecipes[i][j][1];
                     if (oreList[gearRecipes[i][j][0]][1][0] >= gearRecipes[i][j][1])
                         elements[j].style.color = "green";
                     else
