@@ -930,7 +930,7 @@ function generateBlock(luck, location) {
 
 let variant = 1;
 function updateInventory(type, inv) {
-    document.getElementById(type + inv).innerHTML = type + " | 1/" + ((Math.round( 1 / oreList[type][0])) * multis[inv - 1]).toLocaleString() + " | x" + oreList[type][1][inv - 1];
+    document.getElementById(type + inv).innerHTML = "<span class='emoji'>" + type + "</span>" + " | 1/" + ((Math.round( 1 / oreList[type][0])) * multis[inv - 1]).toLocaleString() + " | x" + oreList[type][1][inv - 1];
     if (oreList[type][1][inv - 1] > 0)
         document.getElementById(type + inv).style.display = "block";
     else
@@ -1080,7 +1080,7 @@ function createInventory() {
             tempElement.id = (propertyName + i);
             tempElement.classList = "oreDisplay";
             tempElement.style.display = "none";
-            tempElement.innerHTML = "<span class='emoji>" + propertyName + "</span> | 1/" + ((Math.round( 1 / oreList[propertyName][0])).toLocaleString() * multis[i - 1]).toLocaleString() + " | x" + oreList[propertyName][1][i - 1];
+            tempElement.innerHTML = "<span class='emoji'>" + propertyName + "</span> | 1/" + ((Math.round( 1 / oreList[propertyName][0])).toLocaleString() * multis[i - 1]).toLocaleString() + " | x" + oreList[propertyName][1][i - 1];
             document.getElementById(("inventory") + i).appendChild(tempElement);
             //twemoji.parse(document.getElementById(propertyName+i));
         }
@@ -1152,14 +1152,14 @@ function spawnMessage(block, location) {
         latestSpawns.splice(0, 1);
     if (addToLatest) {
         for (let i = latestSpawns.length - 1; i >= 0; i--) {
-            output[0] += "<span class='emoji>" + latestSpawns[i][0] + "</span> 1/" + (Math.round(1 / (oreList[latestSpawns[i][0]][0]))).toLocaleString();
+            output[0] += "<span class='emoji'>" + latestSpawns[i][0] + "</span> 1/" + (Math.round(1 / (oreList[latestSpawns[i][0]][0]))).toLocaleString();
             if (latestSpawns[i][1] !== undefined)
                 output[0] += " | X: " + (latestSpawns[i][1] - 1000000000) + ", Y: " + -(latestSpawns[i][2]) + "<br>";
             else
                 output[0] += "<br>";
         }
         document.getElementById("latestSpawns").innerHTML = output[0];
-        output[1] += "<span class='emoji>" + block + "</span>" + " Has Spawned!<br>" + "1/" + (Math.round(1 / (oreList[block][0]))).toLocaleString();
+        output[1] += "<span class='emoji'>" + block + "</span>" + " Has Spawned!<br>" + "1/" + (Math.round(1 / (oreList[block][0]))).toLocaleString();
         if (currentPickaxe === 5 || gears[0])
             output[1] += "<br>X: " + (location[1] - 1000000000) + "<br>Y: " + -(location[0]);
         document.getElementById("spawnMessage").innerHTML = output[1];
@@ -1187,7 +1187,8 @@ async function mineReset() {
     mineCapacity = 40000;
     const temp = curDirection;
     curDirection = "";
-    const temp2 = await collectOres(temp);
+    //uncomment when this is used
+    //const temp2 = await collectOres(temp);
     loggedFinds = [];
     canMine = await mineResetAid();
     checkAllAround(curX, curY, 1);
@@ -1292,10 +1293,11 @@ function logFind(type, x, y, variant, atMined, fromReset) {
     latestFinds.push([type, x, y, variant, atMined, fromReset]);
     if (latestFinds.length > 10)
         latestFinds.splice(0, 1);
-    for (let i = latestFinds.length - 1; i >= 0; i--)
+    for (let i = latestFinds.length - 1; i >= 0; i--) {
         if (latestFinds[i][3] !== "Normal")
             output += latestFinds[i][3];
-        output += latestFinds[i][0] + " | X: " + (latestFinds[i][1] - 1000000000) + ", Y: " + -(latestFinds[i][2]);
+        output += "<span class='emoji'>" + latestFinds[i][0] + "</span> | X: " + (latestFinds[i][1] - 1000000000) + ", Y: " + -(latestFinds[i][2]) + "<br>";
+    }
     document.getElementById("latestFinds").innerHTML = output;
     //twemoji.parse(document.getElementById("latestFinds"));
 }
