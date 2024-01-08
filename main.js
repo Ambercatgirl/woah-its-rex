@@ -1,3 +1,5 @@
+const debug = window.location.href.match(/^http:\/\/127\.0\.0\.1:\d{4}/g) !== null;
+let debugLuck = 5;
 class secureLogs {
     #spawnLogs;
     #verifiedLogs;
@@ -80,7 +82,7 @@ let blocksRevealedThisReset = 0;
 let mineCapacity = 40000; // in case this ever needs to be raised
 let canMine = false;
 let lastDirection = "";
-const pickaxes = [
+let pickaxes = [
     ["is anyone gonna read these lol", true],
     ["hi!!! hii!!", false],
     ["wait no get out of here", false],
@@ -542,7 +544,6 @@ paperLayer = {
 },
 
 sillyLayer = {
-    "🧌": 1/696969696969,
     "💅": 1/11201200200,
     "✈️": 1/9110000000,
     "🪢": 1/8181818181,
@@ -555,7 +556,18 @@ fluteLayer = {
     "🪈": 1/1
 },
 
-allLayers = [dirtLayer, brickLayer, foggyLayer, waterLayer, rockLayer, radioactiveLayer, cactusLayer, paperLayer, sillyLayer, fluteLayer];
+allLayers = [
+    dirtLayer,
+    brickLayer,
+    foggyLayer,
+    waterLayer,
+    rockLayer,
+    radioactiveLayer,
+    cactusLayer,
+    paperLayer,
+    sillyLayer, 
+    fluteLayer
+];
 
 function init() {
     let canContinue = false;
@@ -631,8 +643,8 @@ function movePlayer(dir) {
                 mine[curY][curX] = "⛏️";
                 lastDirection = "s";
                 break;
-            default:
-                console.log("wrong key!!");
+            /*default:
+                console.log("wrong key!!");*/
         }
         displayArea();
     }
@@ -712,15 +724,13 @@ function prepareArea(facing) {
     switch(facing) {
         case "a":
             for (let r = curY - constraints[1]; r < curY + 50; r++) {
-                if (mine[r] === undefined) {
+                if (mine[r] === undefined)
                     mine[r] = [];
-                }
                 if (mine[r][curX - constraints[0]] === undefined) {
-                    if (r === 0) {
+                    if (r === 0)
                         mine[r][curX - constraints[0]] = "🟩";
-                    } else {
+                    else
                         mine[r][curX - constraints[0]] = "⬜";
-                    }
                 }
             }
             break;
@@ -728,22 +738,19 @@ function prepareArea(facing) {
             if (mine[curY + 50] === undefined)
                 mine[curY + 50] = [];
             for (let c = curX - constraints[0]; c < curX + 50; c++) {
-                if (mine[curY + 50][c] === undefined) {
+                if (mine[curY + 50][c] === undefined)
                     mine[curY + 50][c] = "⬜"
-                }
             }
             break;
         case "d":
             for (let r = curY - constraints[1]; r < curY + 50; r++) {
-                if (mine[r] === undefined) {
+                if (mine[r] === undefined)
                     mine[r] = [];
-                }
                 if (mine[r][curX + 50] === undefined) {
-                    if (r === 0) {
+                    if (r === 0)
                         mine[r][curX + 50] = "🟩";
-                    } else {
+                    else
                         mine[r][curX + 50] = "⬜";
-                    }
                 }
             }
             break;
@@ -759,17 +766,18 @@ function prepareArea(facing) {
 }
 
 function displayArea() {
-    let output ="";
+    let output = "";
     let constraints = getParams(9, 9);
     for (let r = curY - constraints[1]; r <= curY + 9 + (9-constraints[1]); r++) {
         for (let c = curX - constraints[0]; c <= curX + 9 + (9-constraints[0]); c++)
-            output += mine[r][c];
+            output += "<span class='emoji'>" + mine[r][c] + "</span>";
         output += "<br>";
     }
     document.getElementById("blockDisplay").innerHTML = output;
     document.getElementById("mineResetProgress").innerHTML = blocksRevealedThisReset + "/" + mineCapacity + " Blocks Revealed This Reset";
     document.getElementById("blocksMined").innerHTML = totalMined.toLocaleString() + " Blocks Mined";
     document.getElementById("location").innerHTML = "X: " + (curX - 1000000000) + " | Y: " + (-curY);
+    //twemoji.parse(document.getElementById("blockDisplay"));
 }
 
 function getParams(distanceX, distanceY, x, y) {
@@ -869,6 +877,7 @@ function giveBlock(type, x, y, fromReset) {
 }
 
 function generateBlock(luck, location) {
+    if (debug) luck = typeof debugLuck === "number" ? debugLuck : luck;
     let hasLog = false;
     let probabilityTable = currentLayer;
     let blockToGive = "";
@@ -1071,10 +1080,14 @@ function createInventory() {
             tempElement.id = (propertyName + i);
             tempElement.classList = "oreDisplay";
             tempElement.style.display = "none";
-            tempElement.innerHTML = propertyName + " | 1/" + ((Math.round( 1 / oreList[propertyName][0])).toLocaleString() * multis[i - 1]).toLocaleString() + " | x" + oreList[propertyName][1][i - 1];
+            tempElement.innerHTML = "<span class='emoji>" + propertyName + "</span> | 1/" + ((Math.round( 1 / oreList[propertyName][0])).toLocaleString() * multis[i - 1]).toLocaleString() + " | x" + oreList[propertyName][1][i - 1];
             document.getElementById(("inventory") + i).appendChild(tempElement);
+            //twemoji.parse(document.getElementById(propertyName+i));
         }
     }
+    /*for (let i = 1; i < 5; i++) {
+        twemoji.parse(document.getElementById("inventory"+i));
+    }*/
 }
 
 function createIndex() {
@@ -1116,7 +1129,7 @@ let latestSpawns = [];
 function spawnMessage(block, location) {
     if (!(gears[3]) && blocksRevealedThisReset > mineCapacity - 5000)
         mineCapacity += 5000;
-    let output = "";
+    let output = ["",""];
     let addToLatest = true;
     if (currentPickaxe === 5)
         latestSpawns.push([block, location[1], location[0]]);
@@ -1139,19 +1152,23 @@ function spawnMessage(block, location) {
         latestSpawns.splice(0, 1);
     if (addToLatest) {
         for (let i = latestSpawns.length - 1; i >= 0; i--) {
-            output += latestSpawns[i][0] + " 1/" + (Math.round(1 / (oreList[latestSpawns[i][0]][0]))).toLocaleString();
+            output[0] += "<span class='emoji>" + latestSpawns[i][0] + "</span> 1/" + (Math.round(1 / (oreList[latestSpawns[i][0]][0]))).toLocaleString();
             if (latestSpawns[i][1] !== undefined)
-                output += " | X: " + (latestSpawns[i][1] - 1000000000) + ", Y: " + -(latestSpawns[i][2]) + "<br>";
+                output[0] += " | X: " + (latestSpawns[i][1] - 1000000000) + ", Y: " + -(latestSpawns[i][2]) + "<br>";
             else
-                output += "<br>";
+                output[0] += "<br>";
         }
-        document.getElementById("latestSpawns").innerHTML = output;
-        document.getElementById("spawnMessage").innerHTML = block + " Has Spawned!<br>" + "1/" + (Math.round(1 / (oreList[block][0]))).toLocaleString() + (currentPickaxe === 5 || gears[0]?"<br>X: " + (location[1] - 1000000000) + "<br>Y: " + -(location[0]):"");
+        document.getElementById("latestSpawns").innerHTML = output[0];
+        output[1] += "<span class='emoji>" + block + "</span>" + " Has Spawned!<br>" + "1/" + (Math.round(1 / (oreList[block][0]))).toLocaleString();
+        if (currentPickaxe === 5 || gears[0])
+            output[1] += "<br>X: " + (location[1] - 1000000000) + "<br>Y: " + -(location[0]);
+        document.getElementById("spawnMessage").innerHTML = output[1];
     }
     clearTimeout(spawnOre);
     spawnOre = setTimeout(() => {
         document.getElementById("spawnMessage").innerHTML = "Spawn Messages Appear Here!"
     }, 20000);
+    //twemoji.parse(document.getElementById("spawnMessage"));
 }
 
 function moveOne(dir, button) {
@@ -1256,12 +1273,10 @@ function mineResetAid() {
         let x = 1000000000;
         let y = curY;
         for (let r = y - 50; r < y + 50; r++) {
-            if(mine[r] === undefined) {
+            if(mine[r] === undefined)
                 mine[r] = [];
-            }
-            for (let c = x - 50; c < x + 50; c++) {
+            for (let c = x - 50; c < x + 50; c++)
                 mine[r][c] = "⬜";
-            }
         }
         checkAllAround(curX, curY, 1);
     }, 125);
@@ -1277,14 +1292,12 @@ function logFind(type, x, y, variant, atMined, fromReset) {
     latestFinds.push([type, x, y, variant, atMined, fromReset]);
     if (latestFinds.length > 10)
         latestFinds.splice(0, 1);
-    for (let i = latestFinds.length - 1; i >= 0; i--) {
-        output += latestFinds[i][3] + " ";
-        if (latestFinds[i][5])
-            output += latestFinds[i][0] + " | X: " + (latestFinds[i][1] - 1000000000) + ", Y: " + -(latestFinds[i][2]) + " | FROM RESET<br>"
-        else
-            output += latestFinds[i][0] + " | X: " + (latestFinds[i][1] - 1000000000) + ", Y: " + -(latestFinds[i][2]) + " | At " + latestFinds[i][4].toLocaleString() +  " Mined.<br>";
-    }
+    for (let i = latestFinds.length - 1; i >= 0; i--)
+        if (latestFinds[i][3] !== "Normal")
+            output += latestFinds[i][3];
+        output += latestFinds[i][0] + " | X: " + (latestFinds[i][1] - 1000000000) + ", Y: " + -(latestFinds[i][2]);
     document.getElementById("latestFinds").innerHTML = output;
+    //twemoji.parse(document.getElementById("latestFinds"));
 }
 
 let lastLayerChange = 6000;
@@ -1339,7 +1352,6 @@ function toLocation() {
     });
 }
 
-
 let distanceMulti = 1;
 function switchDistance() {
     let y = document.getElementById("meterDisplay").innerHTML;
@@ -1377,11 +1389,10 @@ function toggleMusic() {
 function changeCanPlay(num, button) {
     let text = button.innerHTML;
     text = text.substring(text.indexOf(" "));
-    if (canPlay[num]) {
+    if (canPlay[num])
         button.innerHTML = "Unmute" + text;
-    } else {
+    else
         button.innerHTML = "Mute" + text;
-    }
     canPlay[num] = !(canPlay[num]);
 }
 
