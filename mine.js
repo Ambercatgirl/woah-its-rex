@@ -430,7 +430,7 @@ const checkSpecials = function(block, get) {
     if (block === "🔮") rand = 10000;
     if (block === "godOfTheMine") rand = 3;
     if (block === "♾️") rand = 1000000000;
-    if (block === "👁️") rand = 1920000000;
+    if (block === "👁️") rand = 10;
     if (Math.random() < 1/rand || get) {
         switch(block) {
             case "💙" : 
