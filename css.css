@@ -771,21 +771,23 @@
   border-color: var(--main-border-color);
   outline: none;
 }
-#musicVolume::-webkit-slider-thumb {
+.spawnVolume::-webkit-slider-thumb, #musicVolume::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 1vw;
+  width: 2vw;
   height: 100%;
   background: white;
   cursor: pointer;
 }
-#musicVolume::-moz-range-thumb {
+.spawnVolume::-moz-range-thumb, #musicVolume::-moz-range-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 3vw;
-  height: 10%;
+  width: 2vw;
+  height: 100%;
   background: white;
   cursor: pointer;
+  border-radius: 0;
+  border: none;
 }
 #loungeData {
   display: inline-flex;
