@@ -333,12 +333,15 @@ function randomFunction(ore, cause, elem) {
             return;
         if (ore === "🕳️")
             return;
-				if (ore === "singularityEgg"){
-					toggleLounge()
-					get("forge").click()
-					displayOreRecipe('wtfCraft')
-					return;
-				}
+        if (["singularityEgg"].includes(ore)){
+            const crafts = {
+                'singularityEgg':'wtfCraft',
+            }
+            if(!toggleLounge.toggled)toggleLounge()
+            if(showLoungeScreen.current !== 'loungeForgeAndVariants') get("forge").click()
+            displayOreRecipe(crafts[ore])
+            return;
+        }
           if (!shouldIgnore(ore) || indexHasOre(ore)) {
             let fromcave = oreList[ore].caveExclusive
             for (const worldList in indexOrder) {
@@ -369,7 +372,7 @@ function randomFunction(ore, cause, elem) {
                 for (const s in indexOrder) {
                     for (const l in indexOrder[s]) {
                         if ((indexOrder[s][l].l.includes(layer)) && indexOrder[s][l].req()) {
-                            toggleLounge();
+                            if(!toggleLounge.toggled)toggleLounge();
                             if (showLoungeScreen.current !== "loungeOreIndex") showLoungeScreen("loungeOreIndex", document.querySelectorAll(".loungeMenuLocationButton")[6]);
                             addIndexLayers.current = String(world);
                             addIndexLayers(addIndexLayers.current);
