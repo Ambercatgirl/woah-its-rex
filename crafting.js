@@ -763,6 +763,7 @@ function collapseRecipe() {
 //i copy pasted all this shit lol
 function dragElement(elmnt) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  let offsetTop, offsetLeft
   let el = get("newCraftingHolderheader")
   el.onpointerdown = dragMouseDown;
 
@@ -775,6 +776,9 @@ function dragElement(elmnt) {
     el.onpointerup = closeDragElement;
     el.onpointerleave = closeDragElement;
     el.onpointermove = elementDrag;
+
+    offsetTop  = get("pinnedRecipeHolder").getBoundingClientRect().y
+    offsetLeft = get("pinnedRecipeHolder").getBoundingClientRect().x
   }
 
   function elementDrag(e) {
@@ -784,8 +788,11 @@ function dragElement(elmnt) {
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    const tpx = (elmnt.offsetTop - pos2)* (100/document.documentElement.clientHeight);
-    const lpx = (elmnt.offsetLeft - pos1)* (100/document.documentElement.clientWidth);
+
+    const tpx = (offsetTop - pos2)* (100/document.documentElement.clientHeight);
+    const lpx = (offsetLeft - pos1)* (100/document.documentElement.clientWidth);
+    offsetTop = offsetTop - pos2
+    offsetLeft = offsetLeft - pos1
     elmnt.style.top = `${tpx}vh`;
     elmnt.style.left = `${lpx}vw`;
   }
