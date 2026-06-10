@@ -333,12 +333,15 @@ function randomFunction(ore, cause, elem) {
             return;
         if (ore === "🕳️")
             return;
-				if (ore === "singularityEgg"){
-					toggleLounge()
-					get("forge").click()
-					displayOreRecipe('wtfCraft')
-					return;
-				}
+        if (["singularityEgg"].includes(ore)){
+            const crafts = {
+                'singularityEgg':'wtfCraft',
+            }
+            if(!toggleLounge.toggled)toggleLounge()
+            if(showLoungeScreen.current !== 'loungeForgeAndVariants') get("forge").click()
+            displayOreRecipe(crafts[ore])
+            return;
+        }
           if (!shouldIgnore(ore) || indexHasOre(ore)) {
             let fromcave = oreList[ore].caveExclusive
             for (const worldList in indexOrder) {
@@ -369,7 +372,7 @@ function randomFunction(ore, cause, elem) {
                 for (const s in indexOrder) {
                     for (const l in indexOrder[s]) {
                         if ((indexOrder[s][l].l.includes(layer)) && indexOrder[s][l].req()) {
-                            toggleLounge();
+                            if(!toggleLounge.toggled)toggleLounge();
                             if (showLoungeScreen.current !== "loungeOreIndex") showLoungeScreen("loungeOreIndex", document.querySelectorAll(".loungeMenuLocationButton")[6]);
                             addIndexLayers.current = String(world);
                             addIndexLayers(addIndexLayers.current);
@@ -507,7 +510,7 @@ function createIndexCards(layer) {
     createIndexCards.indexing = layer;
     const h = get("loungeCardHolder");
     const ic = layer.indexOf("Commons") > -1
-    while (h.firstChild) h.firstChild.remove();
+    h.textContent=""
     let list;
     if (caveList[layer] === undefined) {
         if (ic) list = [...layerList[layer]];
@@ -529,7 +532,7 @@ function createIndexCards(layer) {
             }
         }
         else list = [...layerDictionary[layer].layer];
-
+        if (!ic) list = list.filter((e)=>!layerList.worldTwoCommons.includes(e) && !layerList.worldOneCommons.includes(e))
         for (let i = list.length - 1; i >= 0; i--) {
             const ore = list[i];
             const tier = oreList[ore]["oreTier"];
@@ -807,7 +810,7 @@ function createWebhookId(parent) {
     const children = parent.children;
     const webhookName = children[0].children[0].value;
     const rarityNum = Number(children[1].children[0].value);
-    const idName = children[2].children[0].value;
+    const idName = String(Date.now());
     const webhookLink = children[3].children[0].value;
     if (isNaN(rarityNum) || webhookLink === undefined || idName === undefined || webhookName === undefined) return;
     if (player.webHook.ids[idName] !== undefined) {
@@ -1270,7 +1273,7 @@ function toggleHideCompleted() {
 function updateLoungeStats() {
     const settings = player.loungeSettings;
     if (settings.updateElements) {
-        get("updateLuck").textContent = `${player.displayStatistics.luck.toLocaleString()}x Luck`;
+        get("updateLuck").textContent = `${formatNumber(verifiedOres.getCurrentLuck(),2)}x Luck`;
         const blocks = getAvgBlockSpeed();
         get("updateGenerations").textContent = `${formatNumber(blocks, 2)} Generations/Min`;
         get("updateLayer").textContent = `Mining In: ${getLayer(curY).layerMat + (layerIsTriggered?"*":"")}`
@@ -1285,7 +1288,7 @@ function updateLoungeStats() {
         const cl = verifiedOres.getCaveLuck();
         const ctl = verifiedOres.getCaveTypeLuck();
         const cm = verifiedOres.getCaveModifier();
-        get("updateCL").textContent = `${cl}x Cave Luck`;
+        get("updateCL").textContent = `${formatNumber(cl, 2)}x Cave Luck`;
         get("updateCTL").textContent = `${ctl}x Cave Type Luck`;
         get("updateCM").textContent = `${cm} Cave Modifier`;
         const list = player.powerupCooldowns;

@@ -744,16 +744,16 @@ function collapseRecipe() {
     if (pinInformation.collapsed) {
       //fold
         pinInformation.collapsed = false;
-        get("newCraftingRecipeHolder").style.height = "min(29.2vh,14.6vw)";
-        get("pinnedRecipeHolder").style.height = "min(42vh, 21vw)";
+        get("newCraftingRecipeHolder").classList.remove("unfoldedRecipeHolder");
+        get("newCraftingRecipeHolder").classList.add("foldedRecipeHolder");
         get("collapseRecipe").children[0].children[0].style.backgroundImage = "url('media/downone.png')";
         const textEdit = get("collapseRecipe").children[0];
         textEdit.innerHTML = textEdit.innerHTML.replace("Collapse", "Expand");
     } else {
       //unfold
         pinInformation.collapsed = true;
-        get("newCraftingRecipeHolder").style.height = "100%";
-        get("pinnedRecipeHolder").style.height = "min-content";
+        get("newCraftingRecipeHolder").classList.remove("foldedRecipeHolder");
+        get("newCraftingRecipeHolder").classList.add("unfoldedRecipeHolder");
         get("collapseRecipe").children[0].children[0].style.backgroundImage = "url('media/upone.png')";
         const textEdit = get("collapseRecipe").children[0];
         textEdit.innerHTML = textEdit.innerHTML.replace("Expand", "Collapse");
@@ -763,6 +763,7 @@ function collapseRecipe() {
 //i copy pasted all this shit lol
 function dragElement(elmnt) {
   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  let offsetTop, offsetLeft
   let el = get("newCraftingHolderheader")
   el.onpointerdown = dragMouseDown;
 
@@ -773,8 +774,11 @@ function dragElement(elmnt) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     el.onpointerup = closeDragElement;
-    el.onpointerout = closeDragElement;
+    el.onpointerleave = closeDragElement;
     el.onpointermove = elementDrag;
+
+    offsetTop  = get("pinnedRecipeHolder").getBoundingClientRect().y
+    offsetLeft = get("pinnedRecipeHolder").getBoundingClientRect().x
   }
 
   function elementDrag(e) {
@@ -784,8 +788,11 @@ function dragElement(elmnt) {
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    const tpx = (elmnt.offsetTop - pos2)* (100/document.documentElement.clientHeight);
-    const lpx = (elmnt.offsetLeft - pos1)* (100/document.documentElement.clientWidth);
+
+    const tpx = (offsetTop - pos2)* (100/document.documentElement.clientHeight);
+    const lpx = (offsetLeft - pos1)* (100/document.documentElement.clientWidth);
+    offsetTop = offsetTop - pos2
+    offsetLeft = offsetLeft - pos1
     elmnt.style.top = `${tpx}vh`;
     elmnt.style.left = `${lpx}vw`;
   }
