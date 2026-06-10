@@ -773,7 +773,7 @@ function dragElement(elmnt) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     el.onpointerup = closeDragElement;
-    el.onpointerout = closeDragElement;
+    el.onpointerleave = closeDragElement;
     el.onpointermove = elementDrag;
   }
 
